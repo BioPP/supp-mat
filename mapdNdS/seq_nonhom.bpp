@@ -1,0 +1,27 @@
+alphabet=Codon(letter=DNA)
+genetic_code=Standard
+
+### Tree used for simulation
+input.tree.file=tree.dnd
+
+### length of sequences
+
+number_of_sites = 2000
+
+### Description of the modeling 
+nonhomogeneous = general
+nonhomogeneous.number_of_models = 2
+
+model1 = YN98(kappa=2, omega=0.05, frequencies=F1X4(123_Full.theta=$(THETA_EQ_PRIM), 123_Full.theta1=0.5, 123_Full.theta2=0.5))
+model1.nodes_id=0:4
+
+
+model2 = YN98(kappa=2, omega=0.05, frequencies=F1X4(123_Full.theta=$(THETA_EQ_OTHER), 123_Full.theta1=0.5, 123_Full.theta2=0.5))
+model2.nodes_id=5:9
+
+
+nonhomogeneous.root_freq=F1X4(123_Full.theta=$(THETA_ROOT), 123_Full.theta1=0.5, 123_Full.theta2=0.5)
+
+### output
+output.sequence.file = simul_seq_nonhom.fa
+

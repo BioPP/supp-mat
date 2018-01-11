@@ -1,0 +1,30 @@
+alphabet = Codon(letter=DNA)
+genetic_code=Standard
+
+### Alignment
+
+input.sequence.file = $(SEQ)
+input.sequence.sites_to_use = all
+
+### Used tree
+
+input.tree.file= $(TREE).dnd
+
+### File of the modeling
+
+params = $(MODEL).params
+
+### normalization with the same model in which omega=1
+
+nullModelParams = YN98.omega*=1
+
+### Type of event counted
+
+map.type = DnDs
+
+output.counts = PerSite(file=$(SEQ)_sites.count)
+
+
+
+
+

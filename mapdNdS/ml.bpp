@@ -1,0 +1,30 @@
+alphabet=Codon(letter=DNA)
+genetic_code=Standard
+
+### Alignment
+
+input.sequence.file = $(SEQ)
+input.sequence.sites_to_use = all
+
+
+### Initial tree as a starting point for optimization
+input.tree.file=tree_init.dnd
+
+### Description of the modeling 
+nonhomogeneous = general
+nonhomogeneous.number_of_models = 1
+
+model1 = YN98(frequencies=F1X4(init=observed))
+model1.nodes_id=0:9
+
+nonhomogeneous.root_freq=F1X4(init=observed)
+
+
+### tree output file
+
+output.tree.file = tree_ml.dnd
+
+
+### model ouput file
+
+output.estimates= model_ml.params

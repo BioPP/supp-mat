@@ -1,0 +1,289 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage{a4, fancyhdr}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amsthm, amssymb, eucal}
+\usepackage{moreverb} %%encadrer du verbatim
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{framed}
+
+%%\usepackage[top=20mm,bottom=20mm,left=25mm]{geometry}
+
+\def\ec #1{\mathcal{#1}}
+\def\mb #1{\mathbb{#1}}
+\def\tt #1{\texttt{#1}}
+\def\rm #1{\textrm{#1}}
+\def\pbox #1{\framebox{\parbox{\textwidth}{#1}}}
+
+%% \addtolength{\topmargin}{-2.5cm}
+%% \setlength{\textheight}{25.5cm}
+
+%% \addtolength{\textwidth}{1cm}
+
+
+\usepackage{Sweave}
+\begin{document}
+
+% \setlength{\leftmargin}{-5cm}
+% \setlength{\rightmargin}{-5cm}
+
+\begin{center}
+  {\huge \bf Estimate of dN and dS with Bio++ programs}\\
+  \vskip 2em
+
+\end{center}
+
+
+\hrule
+
+\medskip
+
+
+We present a tutorial to estimate of dN and dS by normalized
+stochastic mapping, with some programs developed on Bio++ libraries.
+
+
+\section*{Programs}
+
+Bio++ libraries are fully described on the wiki site:
+
+\href{http://biopp.univ-montp2.fr/wiki/index.php/Main\_Page}{http://biopp.univ-montp2.fr/wiki/index.php/Main\_Page}
+
+The methods presented here depend on two separate sets of programs,
+\href{http://biopp.univ-montp2.fr/wiki/index.php/BppSuite}{{\textbf{bppsuite}}
+and \href{http://biopp.univ-montp2.fr/forge/testnh}{\textbf{testnh}}.
+
+This site explains how to install all libraries and programs.
+
+
+\medskip
+
+Stand alone binaries for this tutorial are available there:\\
+\url{http://pbil.univ-lyon1.fr/members/gueguen/lib/dNdS/binaries/}.
+
+\medskip
+
+All programs share the same syntax and options. In the next examples,
+minimum configuration files are provided, but all options of the
+programs are described in the
+\href{http://biopp.univ-montp2.fr/manual/html/bppsuite/2.2.0/}{bppsuite
+  manual} and in the
+\href{http://biopp.univ-montp2.fr/manual/html/testnh/v1.1.0/}{testnh
+  manual}.
+
+
+
+\section*{Estimate on simulated sequences}
+
+
+\subsection*{Simulating sequence evolution}
+
+The program to simulate the evolution of sequences is
+\texttt{bppseqgen}, and we can call like this:
+
+\begin{verbatim}
+bppseqgen THETA_ROOT=0.7 THETA_EQ=0.3 param=seq.bpp
+\end{verbatim}
+
+In the configuration file \texttt{seq.bpp}, one unique model is used
+on all the branches (numbered from 0 to 9) of the tree described in
+file \texttt{tree.dnd}. Here, branches of the primate clade are
+numbered from 0 to 4. 
+
+The model used is the standard model of Yang \& Nielsen for codons
+(see
+\href{http://biopp.univ-montp2.fr/Documents/ClassDocumentation/bpp-phyl/html/classbpp\_1\_1YN98.html\#details}{the
+  bio++ link} for a description of the parametrization), with F1X4
+parametrization of the codon distribution. \verb|THETA_ROOT| is the GC
+content at the root of the tree, and \verb|THETA_EQ| is the
+equilibrium GC content. The proportions of C and G are equal, as well
+as the proportions of A and T.
+
+The output alignment is in file \texttt{simul\_seq.fa}.
+
+
+\subsection*{Maximum likelihood estimate of model and branch lengths}
+
+From a given alignment and a given topology, we estimate the most
+likely model and branch lengths with program \texttt{bppml}:
+
+\begin{verbatim}
+bppml SEQ=simul_seq.fa param=ml.bpp
+\end{verbatim}
+
+\texttt{tree\_init.dnd} is the starting tree for the optimization
+procedure. The only important feature in this tree is the topology,
+since it is not optimized. The branches are numbered in the order they
+appear in the file, for example here:
+\texttt{(((0,(1,2)3)4,(5,6)7)8,9);} (for user declaration, use Nhx
+format (see bppsuite manual)). The optimized tree and model are
+respectively in files \texttt{tree\_ml.dnd} and
+\texttt{model\_ml.params}.
+
+\subsection*{Estimates of dN and dS}
+
+Finally, to compute the normalized expected dN and dS of the tree, we
+use \texttt{mapnh} with the optimal tree and model obtained
+previously. Several outputs are available for the estimates of dN and
+dS.
+
+\subsubsection*{Estimates per branch}
+
+We get one tree file per type of substitution, with branch lengths
+replaced by the branch specific estimates.
+
+\begin{verbatim}
+mapnh SEQ=simul_seq.fa MODEL=model_ml TREE=tree_ml \
+                       param=map_per_branch.bpp
+\end{verbatim}
+
+The dN and dS counts on all branches are respectively in tree files
+\\ 
+\verb|simul_seq.fa.counts_dN.dnd| and
+\verb|simul_seq.fa.counts_dS.dnd|.
+
+\smallskip
+
+Here is an example of usage in R :
+
+\begin{verbatim}
+library(ape)
+
+treedN=read.tree(file="simul_seq.fa.counts_dN.dnd")  
+treedS=read.tree(file="simul_seq.fa.counts_dS.dnd")  
+
+plot(treedS)
+
+## length of the edges 
+treedN$edge.length
+treedS$edge.length
+
+## primate edges are numbered 2, 3, 4, 5, 6
+## dN and dS on these edges
+
+sum(treedN$edge.length[2:6])
+sum(treedS$edge.length[2:6])
+
+## estimated dN/dS on the primate clade
+
+sum(treedN$edge.length[2:6])/sum(treedS$edge.length[2:6])
+
+\end{verbatim}
+
+
+\subsubsection*{Counting per site}
+
+It is also possible to get the estimates per site:
+
+\begin{verbatim}
+mapnh SEQ=simul_seq.fa MODEL=model_ml TREE=tree_ml \
+                       param=map_per_site.bpp
+\end{verbatim}
+
+
+The output is in file \verb|simul_seq.fa_sites.count|, with a column
+for dS and a column for dN.
+
+\subsubsection*{Counting per site per branch}
+
+It is also possible to get the estimates per site per branch:
+
+\begin{verbatim}
+mapnh SEQ=simul_seq.fa MODEL=model_ml TREE=tree_ml \
+                       param=map_per_site_per_branch.bpp
+\end{verbatim}
+
+The dN and dS counts on all branches and sites are respectively in
+files \verb|simul_seq.fa_branch_sites_dN.count| and\\
+\verb|simul_seq.fa_branch_sites_dS.count|, with columns numbered
+with branch numbers.
+
+
+\section*{Estimate with stationarity assumption}
+
+We perform similar estimates, but with the assumption of
+stationarity:
+
+\begin{verbatim}
+bppml SEQ=simul_seq.fa param=ml_stat.bpp
+
+mapnh SEQ=simul_seq.fa MODEL=model_stat_ml TREE=tree_stat_ml \
+                       PREF=_stat param=map_per_branch.bpp
+
+\end{verbatim}
+
+And as before, in R:
+
+\begin{verbatim}
+
+treedNstat=read.tree(file="simul_seq.fa_stat.counts_dN.dnd")  
+treedSstat=read.tree(file="simul_seq.fa_stat.counts_dS.dnd")  
+
+## length of the edges 
+treedNstat$edge.length
+treedSstat$edge.length
+
+## primate edges are numbered 2, 3, 4, 5, 6
+## dN and dS on these edges
+
+sum(treedNstat$edge.length[2:6])
+sum(treedSstat$edge.length[2:6])
+
+## estimated dN/dS on the primate clade
+
+sum(treedNstat$edge.length[2:6])/sum(treedSstat$edge.length[2:6])
+
+\end{verbatim}
+
+
+\section*{Simulation and estimate in non-homogeneous modeling}
+
+Here is an example of simulation and estimate with non-homogeneous
+modeling. One model is used for the branches in the primate clade
+(numbers 0 to 4), and another one for the other branches (numbers 5 to
+9).
+
+To reduce the number of parameters for the estimate, we assume that
+$\omega$ as well as equilibrium proportions of C/(C+G) and A/(A+T) are
+equal in both models.
+
+\begin{verbatim}
+bppseqgen THETA_ROOT=0.7 THETA_EQ_PRIM=0.7 THETA_EQ_OTHER=0.3 \
+                         param=seq_nonhom.bpp
+
+bppml SEQ=simul_seq_nonhom.fa param=ml_nonhom.bpp
+
+mapnh SEQ=simul_seq_nonhom.fa MODEL=model_nonhom_ml \
+      TREE=tree_nonhom_ml param=map_per_branch.bpp
+
+\end{verbatim}
+
+And in R:
+
+\begin{verbatim}
+
+treedNnonhom=read.tree(file="simul_seq_nonhom.fa.countsdN.dnd")  
+treedSnonhom=read.tree(file="simul_seq_nonhom.fa.countsdS.dnd")  
+
+## length of the edges 
+treedNnonhom$edge.length
+treedSnonhom$edge.length
+
+## primate edges are numbered 2, 3, 4, 5, 6
+## dN and dS on these edges
+
+sum(treedNnonhom$edge.length[2:6])
+sum(treedSnonhom$edge.length[2:6])
+
+## estimated dN/dS on the primate clade
+
+sum(treedNnonhom$edge.length[2:6])/sum(treedSnonhom$edge.length[2:6])
+
+\end{verbatim}
+
+
+\end{document}
+
+
+
