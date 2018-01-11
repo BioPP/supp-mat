@@ -1,6 +1,5 @@
-# supp-mat
+# mapdNdS
 
-This repository stores supplementary material for articles concerning methods developped in bio++, bppsuite, testnh.
+Tutorial for computing dN and dS with stochastic mapping.
 
-There is one subdirectory per article, with clear name.
 
