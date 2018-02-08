@@ -1,0 +1,28 @@
+alphabet = Codon(letter=DNA)
+genetic_code=Standard
+
+DATA=TENT
+REP=.
+RDATA=.
+
+input.sequence.format=Fasta
+input.sequence.file=$(RDATA)/$(DATA).fa
+
+input.tree.file= $(REP)/$(DATA)_ml.dnd
+input.tree.format = Newick
+
+# Remove stop codons
+input.sequence.remove_stop_codons=yes
+input.sequence.sites_to_use = all
+input.sequence.max_gap_allowed = 6
+input.sequence.max_unresolved_allowed = 6
+
+param = $(REP)/$(DATA).params
+
+map.type = Combination(reg1=DnDs, reg2=SW)
+
+output.counts = PerType(prefix=$(REP)/$(DATA).counts_)
+
+nullModelParams = YN98.omega*=1
+
+

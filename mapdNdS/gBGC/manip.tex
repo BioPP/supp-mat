@@ -1,0 +1,117 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage{a4, fancyhdr}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amsthm, amssymb, eucal}
+\usepackage{moreverb} %%encadrer du verbatim
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{framed}
+
+%%\usepackage[top=20mm,bottom=20mm,left=25mm]{geometry}
+
+\def\ec #1{\mathcal{#1}}
+\def\mb #1{\mathbb{#1}}
+\def\tt #1{\texttt{#1}}
+\def\rm #1{\textrm{#1}}
+\def\pbox #1{\framebox{\parbox{\textwidth}{#1}}}
+
+%% \addtolength{\topmargin}{-2.5cm}
+%% \setlength{\textheight}{25.5cm}
+
+%% \addtolength{\textwidth}{1cm}
+
+
+\usepackage{Sweave}
+\begin{document}
+
+% \setlength{\leftmargin}{-5cm}
+% \setlength{\rightmargin}{-5cm}
+
+\begin{center}
+  {\huge \bf Estimation of dN and dS considering different
+    substitution categories}\\
+  \vskip 2em
+
+\end{center}
+
+\hrule
+
+\medskip
+
+
+We present a tutorial to estimate dN and dS for different categories of
+substitutions, either overall, or depending on the change in GC
+content.
+
+\texttt{S} (resp. \texttt{W}) stands for \texttt{G} or \texttt{C}
+(resp. \texttt{A} or \texttt{T}). And, for example, \texttt{S} $
+\rightarrow $ \texttt{W} is any substitution from \texttt{S} to
+\texttt{W}, and \texttt{dS X S} $ \rightarrow $ \texttt{W} is any
+synonymous such substitution.
+
+
+\subsection*{Maximum likelihood estimate of model and branch lengths}
+
+The first step is to infer the best-fit parameters for a specific
+model, root and tree from the data by maximum likelihood. Here, we use
+the YN98 model.
+
+\begin{verbatim}
+bppml param=base.bpp
+\end{verbatim}
+
+\texttt{TENT.dnd} is the starting tree for the optimization procedure.
+The only important feature in this tree is the topology, which is not
+optimized. The branches are numbered in the order they appear in the
+file, for example here: \texttt{(((0,(1,2)3)4,(5,6)7)8,9);} (for user
+declaration, use Nhx format (see bppsuite manual)). The optimized tree
+and model are respectively in files \texttt{tree\_ml.dnd} and
+\texttt{model\_ml.params}\footnote{In the configuration file we set
+  the tolerance to stop the optimization process rather high,
+  \texttt{optimization.tolerance = 10}, to shorten the computation
+  time. The user can check that with lower values the estimates of the
+  parameters are not much different.}.
+
+\subsection*{Estimates of dN and dS}
+
+Then, to compute dN and dS on each branch, we use \texttt{mapnh} with
+the optimal tree and model obtained previously.
+
+We get one tree file per type of substitution, with branch lengths
+replaced by the branch specific estimates.
+
+\begin{verbatim}
+mapnh param=map_dNdS.bpp
+\end{verbatim}
+
+The dN and dS counts on all branches are respectively in tree files
+\\ 
+\verb|TENT.counts_dN.dnd| and
+\verb|TENT.counts_dS.dnd|.
+
+\smallskip
+
+An example of usage in R is in file \texttt{manip.R}. In this file, we
+use the library \texttt{ape} to handle trees. Note that the node
+numbers are different between \texttt{bio++} and \texttt{ape}.
+
+\subsection*{Category specific estimates of dN and dS}
+
+With command
+
+\begin{verbatim}
+mapnh param=map_dNdS_GC.bpp
+\end{verbatim}
+
+we compute dN and dS for each category \texttt{S} $
+\rightarrow $ \texttt{W}, \texttt{S} $
+\rightarrow $ \texttt{S}, \texttt{W} $
+\rightarrow $ \texttt{W}, \texttt{W} $
+\rightarrow $ \texttt{S}.
+
+The dN and dS counts for the different categories on all branches
+are found in the tree files, such as \\ \verb|TENT.counts_dN_X_W->S.dnd| and
+\verb|TENT.counts_dS_X_W->S.dnd|.
+
+\end{document}
