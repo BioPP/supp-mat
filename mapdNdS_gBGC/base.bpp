@@ -1,0 +1,47 @@
+alphabet=Codon(letter=DNA)
+genetic_code=Standard
+
+DATA=gene
+REP=.
+RDATA=.
+
+input.sequence.format=Fasta
+input.sequence.file=$(RDATA)/$(DATA).fa
+
+# Remove stop codons
+input.sequence.remove_stop_codons=yes
+input.sequence.sites_to_use = all
+
+input.tree.file=TENT.dnd
+
+likelihood.recursion = simple
+likelihood.recursion_simple.compression = simple
+
+# Substitution model parameters:
+nonhomogeneous=general
+nonhomogeneous.number_of_models=1
+
+model1=YN98(frequencies=F3X4, initFreq=observed)
+model1.nodes_id=0:90
+
+nonhomogeneous.root_freq=F3X4(init=observed)
+
+# ----------------------------------------------------------------------------------------
+#                                     Optimization
+# ----------------------------------------------------------------------------------------
+
+optimization.verbose = 1
+
+optimization.max_number_f_eval = 1000
+optimization.tolerance = 10
+optimization.message_handler = none
+optimization.method=fullD //[DB|fullD]
+optimization.method_DB.nstep=1
+
+# Should we write the resulting tree? none or file name.
+output.tree.file = $(REP)/$(DATA)_ml.dnd
+
+# model ouput file:
+
+output.estimates=$(REP)/$(DATA).params
+
