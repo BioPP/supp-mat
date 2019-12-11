@@ -8,7 +8,7 @@ input.sequence.file = escherichia_concatenat_1.fasta
 input.sequence.remove_stop_codons=yes
 
 input.sequence.sites_to_use = all
-input.tree.file= escherichia_concatenat_1.fasta.dnd
+input.tree.file= escherichia_concatenat_1.dnd
 
 likelihood.recursion = simple
 likelihood.recursion_simple.compression = simple
