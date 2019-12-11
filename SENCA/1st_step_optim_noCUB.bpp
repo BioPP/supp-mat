@@ -1,0 +1,71 @@
+alphabet=Codon(letter=DNA)
+genetic_code=Standard
+
+input.sequence.format=Fasta
+input.sequence.file = escherichia_concatenat_1.fasta
+
+# Remove stop codons
+input.sequence.remove_stop_codons=yes
+
+input.sequence.sites_to_use = all
+input.tree.file= escherichia_concatenat_1.dnd
+
+
+likelihood.recursion = simple
+likelihood.recursion_simple.compression = simple
+
+
+nonhomogeneous = general
+nonhomogeneous.number_of_models = 1
+
+model1=SENCA(model=HKY85(),fitness=FullPerAA(protein_frequencies=Full()))
+model1.nodes_id=0:63
+
+# Root frequencies:
+nonhomogeneous.root_freq=F3X4(init_freqs=observed)
+
+# Rate distribution parameters:
+rate_distribution=Constant()
+
+# ----------------------------------------------------------------------------------------
+#                                     Optimization
+# ----------------------------------------------------------------------------------------
+
+optimization.verbose = 1
+
+optimization.max_number_f_eval = 1000
+
+optimization.ignore_parameters = SENCA.fit_FullPerAA.*_theta*
+optimization.tolerance = 0.001
+
+optimization.message_handler = none
+
+optimization.profiler = optim_noCUB.profile
+
+optimization.topology = no
+
+optimization.method=fullD //[DB|fullD]
+optimization.method_DB.nstep=1
+optimization.scale_first=no
+optimization.verbose=3
+
+optimization.backup.file = optim_noCUB.buf
+
+# Should we write the resulting tree? none or file name.
+output.tree.file = escherichia_concatenat_1_ml.dnd
+
+# model ouput file:
+
+output.estimates= optim_noCUB.params
+
+# ----------------------------------------------------------------------------------------
+#                                     Bootstrap
+# ----------------------------------------------------------------------------------------
+
+bootstrap.number = 0
+# Tell if numerical parameters should be kept to their initial value when bootstrapping: 
+bootstrap.approximate = no
+# Set this to yes for detailed output when bootstrapping. 
+bootstrap.verbose = no
+
+
