@@ -3,25 +3,22 @@ genetic_code=Standard
 
 ### Alignment
 
-input.sequence.file = $(SEQ)
+input.data1 = alignment(file = $(SEQ), sites_to_use = all)
 
-input.sequence.sites_to_use = all
-
-### Initial tree
-
-input.tree.file=tree_init.dnd
+### Tree used for init
+input.tree1 = user(file=tree_init.dnd)
 
 ### Description of the modeling 
-nonhomogeneous = general
-nonhomogeneous.number_of_models = 2
 
-model1 = YN98(frequencies=F1X4(init=observed))
-model1.nodes_id=0:4
+model1=YN98(frequencies=F1X4(init=observed, data=1))
 
-model2 = YN98(omega=YN98.omega_1,frequencies=F1X4(init=observed, 123_Full.theta2 = YN98.123_Full.theta2_1, 123_Full.theta1 = YN98.123_Full.theta1_1))
-model2.nodes_id=5:9
+model2=YN98(frequencies=F1X4(init=observed, data=1))
 
-nonhomogeneous.root_freq=F1X4(init=observed)
+root_freq1=F1X4(init=observed, data=1)
+
+process1=NonHomogeneous(model1=1, model1.nodes_id=0:4, model2=2, model2.nodes_id=5:9, root=1, tree=1)
+
+phylo1 = Single(process=1, data=1)
 
 
 ### tree output file
