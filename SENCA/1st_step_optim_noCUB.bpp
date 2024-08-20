@@ -1,31 +1,18 @@
 alphabet=Codon(letter=DNA)
 genetic_code=Standard
 
-input.sequence.format=Fasta
-input.sequence.file = escherichia_concatenat_1.fasta
+input.data1 = alignment(file = escherichia_concatenat_1.fasta, remove_stop_codons=yes, sites_to_use = all)
 
-# Remove stop codons
-input.sequence.remove_stop_codons=yes
+input.tree1 = user(file= escherichia_concatenat_1.dnd)
 
-input.sequence.sites_to_use = all
-input.tree.file= escherichia_concatenat_1.dnd
-
-
-likelihood.recursion = simple
-likelihood.recursion_simple.compression = simple
-
-
-nonhomogeneous = general
-nonhomogeneous.number_of_models = 1
+root_freq1=F3X4(init=observed, data=1)
 
 model1=SENCA(model=HKY85(),fitness=FullPerAA(protein_frequencies=Full()))
-model1.nodes_id=0:63
 
 # Root frequencies:
-nonhomogeneous.root_freq=F3X4(init_freqs=observed)
+process1=Homogeneous(model=1,root=1,tree=1)
 
-# Rate distribution parameters:
-rate_distribution=Constant()
+phylo1 = Single(process=1, data=1)
 
 # ----------------------------------------------------------------------------------------
 #                                     Optimization

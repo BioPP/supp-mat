@@ -14,7 +14,6 @@ input.tree1 = user(file=$(TREE).dnd_1)
 param = $(MODEL).params
 
 ### normalization with the same model in which omega=1
-
 nullProcessParams = YN98.omega*=1
 
 ### Type of event counted

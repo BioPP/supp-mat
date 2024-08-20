@@ -66,8 +66,8 @@ The only important feature in this tree is the topology, which is not
 optimized. The branches are numbered in the order they appear in the
 file, for example here: \texttt{(((0,(1,2)3)4,(5,6)7)8,9);} (for user
 declaration, use Nhx format (see bppsuite manual)). The optimized tree
-and model are respectively in files \texttt{tree\_ml.dnd} and
-\texttt{model\_ml.params}\footnote{In the configuration file we set
+and model are respectively in files \texttt{TENT\_ml.dnd\_1} and
+\texttt{TENT.params}\footnote{In the configuration file we set
   the tolerance to stop the optimization process rather high,
   \texttt{optimization.tolerance = 10}, to shorten the computation
   time. The user can check that with lower values the estimates of the
@@ -110,8 +110,9 @@ we compute dN and dS for each category \texttt{S} $
 \rightarrow $ \texttt{W}, \texttt{W} $
 \rightarrow $ \texttt{S}.
 
-The dN and dS counts for the different categories on all branches
-are found in the tree files, such as \\ \verb|TENT.counts_dN_X_W->S.dnd| and
+on each branch. The dN and dS counts for the different categories on
+all branches are found in the tree files, such as
+\\ \verb|TENT.counts_dN_X_W->S.dnd| and
 \verb|TENT.counts_dS_X_W->S.dnd|.
 
 \end{document}

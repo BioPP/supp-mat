@@ -10,7 +10,7 @@ input.tree1 = user(file=tree_init.dnd)
 
 ### Description of the modeling 
 
-model1 = YN98(frequencies=F1X4(init=observed), data=1)
+model1 = YN98(frequencies=F1X4(init=observed, data=1))
 
 root_freq1=F1X4(init=observed, data=1)
 

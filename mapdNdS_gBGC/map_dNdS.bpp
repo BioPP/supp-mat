@@ -1,29 +1,27 @@
 alphabet = Codon(letter=DNA)
 genetic_code=Standard
 
-DATA=gene
+DATA=TENT
 REP=.
 RDATA=.
 
-input.sequence.format=Fasta
-input.sequence.file=$(RDATA)/$(DATA).fa
+### Alignment
+input.data1 = alignment(file = $(RDATA)/$(DATA).fa, remove_stop_codons=yes, sites_to_use = all, max_gap_allowed = 6, max_unresolved_allowed = 6)
 
-input.tree.file= $(REP)/$(DATA)_ml.dnd
-input.tree.format = Newick
-
-# Remove stop codons
-input.sequence.remove_stop_codons=yes
-input.sequence.sites_to_use = all
-input.sequence.max_gap_allowed = 6
-input.sequence.max_unresolved_allowed = 6
-
+### Tree
+input.tree1 = user(file=$(REP)/$(DATA)_ml.dnd_1)
 
 param = $(REP)/$(DATA).params
 
+
+### normalization with the same model in which omega=1
+nullProcessParams = YN98.omega*=1
+
+### Type of event counted
+
 map.type = DnDs
 
-output.counts = PerType(prefix=$(REP)/$(DATA).counts_)
+output.counts = PerType(file=$(REP)/$(DATA).counts)
 
-nullModelParams = YN98.omega*=1
 
 
