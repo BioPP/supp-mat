@@ -2,7 +2,6 @@ alphabet=Codon(letter=DNA)
 genetic_code=Standard
 
 ### Alignment
-
 input.data1 = alignment(file = $(SEQ), sites_to_use = all)
 
 ### Tree used for init
