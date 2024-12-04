@@ -14,7 +14,7 @@ model1 = YN98(frequencies=F1X4(init=observed, data=1))
 
 root_freq1=F1X4(init=observed, data=1)
 
-process1=Homogeneous(model=1,root=1,tree=1)
+process1=Homogeneous(model=1,root_freq=1,tree=1)
 
 
 phylo1 = Single(process=1, data=1)
